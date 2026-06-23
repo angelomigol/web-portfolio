@@ -1,17 +1,201 @@
 ---
-import Layout from "@/layouts/main.astro"
-import { Button } from "@/components/ui/button"
+/**
+ * Home Page
+ *
+ * Sections:
+ * 1. Hero - Value statement with featured case study snapshots
+ * 2. Introduction - Brief personal introduction with journey link
+ * 3. Recent Projects - Latest project highlights and outcomes
+ * 4. CTA - Call-to-action for work opportunities
+ *
+ * Route: /
+ *
+ * @page
+ */
+import MainLayout from "@/layouts/main.astro"
+import SEO from "@/components/SEO.astro"
+import StructuredData from "@/components/StructuredData.astro"
+import ForwardLink from "@/components/ForwardLink.astro"
+import { siteConfig } from "@/config"
+import { getCollection } from "astro:content"
+
+const careerJourney = await getCollection("journey")
+const careerHighlights = careerJourney.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+)
+
+const caseSnapshots = careerHighlights.slice(0, 2)
+
+const allProjects = await getCollection("projects")
+const featuredProjects = allProjects
+  .filter((project) => project.data.featured === true)
+  .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
+  .slice(0, 3)
 ---
 
-<Layout>
-  <div class="flex min-h-svh p-6">
-    <div class="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-      <div>
-        <h1 class="font-medium">Project ready!</h1>
-        <p>You may now add components and start building.</p>
-        <p>We've already added the button component for you.</p>
-        <Button client:load className="mt-2">Button</Button>
+<MainLayout>
+  <SEO
+    slot="head"
+    title={siteConfig.author.name}
+    description={siteConfig.description}
+    type="website"
+    noSuffix
+  />
+
+  <StructuredData type="Website" />
+  <StructuredData type="Person" />
+
+  <main class="mx-auto max-w-275 px-6 pb-16 max-md:px-4 max-md:pb-12">
+    <section
+      class="mb-16 border-b border-b-border pt-16 pb-20 max-md:pt-10 max-md:pb-12"
+    >
+      <div
+        class="grid grid-cols-2 items-start gap-16 max-md:grid-cols-1 max-md:gap-10"
+      >
+        <div class="pr-8 max-md:pr-0">
+          <h1
+            class="mb-6 text-4xl/snug font-semibold tracking-tight max-md:text-3xl/snug"
+          >
+            Hello, I'm Angelo👋<br />
+            <span class="text-muted-foreground">
+              An aspiring software developer building and documenting my
+              journey.
+            </span>
+          </h1>
+          <p class="mb-6 text-lg/6 text-secondary-foreground">
+            A portfolio of my projects, experiments, and the lessons I learned
+            while building them.
+          </p>
+          <!-- <p class="mb-8 text-sm tracking-[0.01em] text-muted-foreground">
+            {siteConfig.author.name} · {siteConfig.author.title}
+          </p> -->
+          <div class="flex gap-4 max-md:flex-col">
+            <a
+              href="/projects"
+              class="inline-block rounded-[6px] bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-85 max-md:w-full max-md:text-center"
+              >Explore Projects</a
+            >
+            <a
+              href="/Cardenas-Resume-2026.pdf"
+              download
+              class="inline-flex items-center gap-2 rounded-[6px] border border-foreground bg-transparent px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-85 max-md:w-full max-md:text-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"></path>
+              </svg>
+              Download CV
+            </a>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <div class="flex flex-col gap-4">
+            {
+              caseSnapshots.map((career) => {
+                const date = new Date(career.data.date)
+                const formattedDate = date.toLocaleDateString("en-US", {
+                  month: "short",
+                  year: "numeric",
+                })
+                return (
+                  <div class="block rounded-[8px] border bg-secondary px-6 py-5 transition hover:border-muted-foreground hover:bg-[#fafafa] in-data-[theme=dark]:hover:bg-[#1a1a1a] max-md:px-5 max-md:py-4">
+                    <span class="mb-1.5 block text-sm font-semibold tracking-wider text-muted-foreground uppercase">
+                      {formattedDate}
+                    </span>
+                    <span class="mb-2 block text-base/snug font-semibold">
+                      {career.data.title}
+                    </span>
+                    <span class="vlock text-sm text-secondary-foreground">
+                      {career.data.description}
+                    </span>
+                  </div>
+                )
+              })
+            }
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</Layout>
+    </section>
+
+    <section
+      class="mb-20 max-w-150 text-lg/relaxed text-secondary-foreground max-md:text-base/relaxed"
+    >
+      <p class="mb-4 text-foreground">
+        I'm {siteConfig.author.name}, an aspiring software developer looking for
+        opportunities to learn, grow, and contribute to meaningful projects.
+      </p>
+      <p class="mb-4">
+        I enjoy documenting my work and thought process because it helps me
+        learn and makes my projects easier to understand.
+      </p>
+      <ForwardLink href="/journey" text="Read my journey" variant="muted" />
+    </section>
+
+    <section class="mb-20">
+      <div
+        class="mb-8 flex items-baseline justify-between max-md:flex-col max-md:items-start max-md:gap-2"
+      >
+        <h2 class="text-xl font-semibold tracking-[-0.01em]">
+          Featured Projects
+        </h2>
+        <ForwardLink href="/projects" text="View all" variant="muted" />
+      </div>
+
+      {
+        featuredProjects.length > 0 ? (
+          <div class="flex flex-col gap-0 border-t">
+            {featuredProjects.map((projects) => (
+              <div class="border-b py-6 last:border-b-0">
+                <span class="mb-2 block text-sm font-medium tracking-wider text-muted-foreground uppercase">
+                  {projects.data.year}
+                </span>
+                <h3 class="mb-2 text-lg/snug font-semibold max-md:text-base/snug">
+                  {projects.data.title}
+                </h3>
+                <p class="text-sm/relaxed text-secondary-foreground">
+                  {projects.data.overview}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p class="py-6 text-muted-foreground italic">
+            No Featured Projects Yet.
+          </p>
+        )
+      }
+    </section>
+
+    <section class="border-t py-12">
+      <h2 class="mb-3 text-2xl font-semibold tracking-[-0.01em]">
+        Let's Build Something Cool
+      </h2>
+      <p class="mb-6 max-w-125 text-base/relaxed text-secondary-foreground">
+        I'm always open to new opportunities, collaborations, and connecting
+        with other developers. Feel free to check out my work or reach out.
+      </p>
+      <div class="flex gap-4 max-md:flex-col">
+        <a
+          href="/projects"
+          class="inline-block rounded-[6px] bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-85 max-md:w-full max-md:text-center"
+          >View Projects</a
+        >
+        <a
+          href="/contact"
+          class="inline-block rounded-[6px] border border-foreground bg-transparent px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-85 max-md:w-full max-md:text-center"
+          >Get in Touch</a
+        >
+      </div>
+    </section>
+  </main>
+</MainLayout>

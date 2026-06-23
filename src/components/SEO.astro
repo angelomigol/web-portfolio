@@ -1,0 +1,90 @@
+---
+/**
+ * SEO Component
+ *
+ * @component
+ *
+ * @example
+ * ```astro
+ * <MainLayout>
+ *   <SEO
+ *     slot="head"
+ *     title="About Me"
+ *     description="Learn more about my background"
+ *   />
+ *   <div>Content</div>
+ * </MainLayout>
+ */
+
+import { siteConfig } from "@/config"
+
+interface Props {
+  title: string
+  description?: string
+  noSuffix?: boolean
+  type?: "website" | "profile" | "article"
+  image?: string
+  publishDate?: Date
+  updatedDate?: Date
+  canonicalUrl?: string
+}
+
+const {
+  title,
+  description = siteConfig.description,
+  type = "website",
+  image,
+  canonicalUrl,
+  publishDate,
+  updatedDate,
+  noSuffix = false,
+} = Astro.props
+
+const fullTitle = noSuffix
+  ? title
+  : title
+    ? `${title} | ${siteConfig.author.name}`
+    : siteConfig.title
+
+const currentURL = canonicalUrl || Astro.url.href
+
+const siteURL = siteConfig.url.endsWith("/")
+  ? siteConfig.url
+  : `${siteConfig.url}/`
+
+const defaultImage = `${siteURL}og-image.png`
+const ogImage = image || defaultImage
+
+const absoluteImageURL = ogImage.startsWith("http")
+  ? ogImage
+  : `${siteURL}${ogImage.replace(/^\//, "")}`
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={currentURL} />
+<meta name="author" content={siteConfig.author.name} />
+
+<meta property="og:type" content={type} />
+<meta property="og:url" content={currentURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={absoluteImageURL} />
+<meta property="og:site_name" content={siteConfig.title} />
+
+{
+  type === "article" && publishDate && (
+    <>
+      <meta
+        property="article:published_time"
+        content={publishDate.toISOString()}
+      />
+      {updatedDate && (
+        <meta
+          property="article:modified_time"
+          content={updatedDate.toISOString()}
+        />
+      )}
+    </>
+  )
+}

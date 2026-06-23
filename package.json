@@ -2,6 +2,19 @@
   "name": "web-portfolio",
   "type": "module",
   "version": "0.0.1",
+  "description": "Personal portfolio",
+  "keywords": [
+    "astro",
+    "react",
+    "tailwindcss",
+    "portfolio"
+  ],
+  "author": "Angelo Cardenas <miguel.cardenas0714@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angelomigol/portfolio.git"
+  },
+  "homepage": "https://cardenas.angelo.me",
   "private": true,
   "engines": {
     "node": ">=22.12.0"
@@ -16,34 +29,28 @@
     "typecheck": "astro check"
   },
   "dependencies": {
-    "@astrojs/react": "^5",
-    "@base-ui/react": "^1.6.0",
-    "@fontsource-variable/inter": "^5.2.8",
-    "@tailwindcss/vite": "^4",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "astro": "^6",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^1.21.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "shadcn": "^4.11.0",
+    "@astrojs/mdx": "^6.0.3",
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/vite": "^4.3.1",
+    "astro": "^6.4.8",
+    "sharp": "^0.35.2",
     "tailwind-merge": "^3.6.0",
-    "tailwindcss": "^4",
+    "tailwindcss": "^4.3.1",
     "tw-animate-css": "^1.4.0"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9",
-    "@eslint/js": "^10",
-    "eslint": "^10",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17",
-    "prettier": "^3.8.3",
+    "@astrojs/check": "^0.9.9",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.5.0",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.4",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "typescript": "~6",
-    "typescript-eslint": "^8"
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.61.1",
+    "vite": "^8.0.16"
+  },
+  "overrides": {
+    "vite": "^7"
   }
 }

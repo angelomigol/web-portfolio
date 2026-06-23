@@ -1,15 +1,54 @@
 ---
+import { ClientRouter } from "astro:transitions"
+import { siteConfig } from "@/config"
+import Navigation from "@/components/Navigation.astro"
+import Footer from "@/components/Footer.astro"
 import "@/styles/global.css"
 ---
 
-<html lang="en">
+<!doctype html>
+<html lang={siteConfig.language} data-theme="dark">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <slot name="head" />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Astro App</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <ClientRouter />
+
+    <script is:inline>
+      ;(function () {
+        const stored = localStorage.getItem("theme")
+        const theme =
+          stored ||
+          (window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark")
+        document.documentElement.setAttribute("data-theme", theme)
+      })()
+    </script>
+
+    <script is:inline>
+      document.addEventListener("astro:before-swap", (e) => {
+        const theme = document.documentElement.getAttribute("data-theme")
+        e.newDocument.documentElement.setAttribute("data-theme", theme)
+      })
+    </script>
   </head>
-  <body>
-    <slot />
+  <body class="flex min-h-screen flex-col">
+    <header class="sticky top-0 z-100" transition:persist>
+      <Navigation />
+    </header>
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer />
   </body>
 </html>

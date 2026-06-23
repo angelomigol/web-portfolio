@@ -1,0 +1,93 @@
+---
+/**
+ * Navigation Component
+ *
+ * @component
+ *
+ * @example
+ * ```astro
+ * <Navigation />
+ * ```
+ */
+import { siteConfig } from "../config"
+import ThemeToggle from "./ModeToggle.astro"
+
+const currentPath = Astro.url.pathname
+
+const navItems = [{ label: "Home", href: "/" }, ...siteConfig.nav]
+
+const isActive = (href: string) => {
+  if (href === "/") {
+    return currentPath === "/"
+  }
+  return currentPath.startsWith(href)
+}
+---
+
+<nav
+  class="mb-4 flex items-center border-b bg-background px-0 py-4"
+  aria-label="Main navigation"
+>
+  <div class="flex-1 scrollbar-none overflow-x-auto overflow-y-hidden">
+    <ul
+      class="m-0 flex min-w-max list-none flex-nowrap justify-center gap-8 px-6 py-2 max-md:justify-start max-md:gap-6 max-md:px-4 max-md:py-2"
+    >
+      {
+        navItems.map((item) => (
+          <li class="m-0 shrink-0">
+            <a
+              href={item.href}
+              class:list={[
+                "nav-link",
+                "text-sm font-medium tracking-wider whitespace-nowrap text-secondary-foreground uppercase no-underline transition-colors hover:text-foreground max-md:text-xs",
+                { "nav-link--active": isActive(item.href) },
+              ]}
+              aria-current={isActive(item.href) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <div
+    class="relative flex shrink-0 items-center border-l border-border bg-background px-3 before:pointer-events-none before:absolute before:top-0 before:bottom-0 before:-left-6 before:w-6 before:bg-[linear-gradient(to_right,transparent,var(--color-background))] before:content-[''] max-md:before:-left-4 max-md:before:w-4"
+  >
+    <ThemeToggle />
+  </div>
+</nav>
+
+<script>
+  function updateActiveNav() {
+    const currentPath = window.location.pathname
+    const navLinks = document.querySelectorAll(".nav-link")
+
+    navLinks.forEach((link) => {
+      const href = link.getAttribute("href")
+      let isActive = false
+
+      if (href === "/") {
+        isActive = currentPath === "/"
+      } else if (href) {
+        isActive = currentPath.startsWith(href)
+      }
+
+      link.classList.toggle("nav-link--active", isActive)
+      if (isActive) {
+        link.setAttribute("aria-current", "page")
+      } else {
+        link.removeAttribute("aria-current")
+      }
+    })
+  }
+
+  document.addEventListener("astro:after-swap", updateActiveNav)
+  document.addEventListener("astro:page-load", updateActiveNav)
+</script>
+
+<style>
+  .nav-link--active {
+    color: var(--color-foreground);
+  }
+</style>

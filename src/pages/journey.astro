@@ -1,0 +1,208 @@
+---
+/*
+ * Journey Page
+ *
+ * Features:
+ * - Queries all journey entries from content collection
+ * - Sorts by date (descending - most recent first)
+ * - Renders expandable content for each entry
+ * - Detects entries with body content vs. frontmatter-only
+ * - Visual timeline with color-coded entry types
+ * - Skills/technologies display per entry
+ * - Empty state handling
+ *
+ * Entry Types:
+ * - milestone: Major achievements and launches
+ * - learning: Education and skill development
+ * - transition: Job changes and career moves
+ *
+ * Route: /journey
+ *
+ * @page
+ */
+
+import MainLayout from "@/layouts/main.astro"
+import SEO from "@/components/SEO.astro"
+import { getCollection, render } from "astro:content"
+import { pagesConfig } from "@/pages.config"
+
+const allJourneyEntries = await getCollection("journey")
+const sortedJourneyEntries = allJourneyEntries.sort((a, b) => {
+  return b.data.date.getTime() - a.data.date.getTime()
+})
+const entriesWithContent = await Promise.all(
+  sortedJourneyEntries.map(async (entry) => {
+    const { Content } = await render(entry)
+
+    const hasContent = Boolean(entry.body && entry.body.trim().length > 0)
+    return { entry, Content, hasContent }
+  })
+)
+
+const typeConfig = {
+  milestone: { label: "Milestone", class: "status--completed" },
+  learning: {
+    label: "Learning",
+    class: "bg-[#22c55e26] text-[#22c55e]",
+  },
+  transition: {
+    label: "Transition",
+    class: "bg-[#73737326] text-muted-foreground",
+  },
+}
+---
+
+<MainLayout>
+  <SEO
+    slot="head"
+    title={pagesConfig.journey.title}
+    description={pagesConfig.journey.description}
+    type="website"
+  />
+
+  <main class="mx-auto max-w-200 px-6 py-8 max-md:px-4 max-md:py-6">
+    <header class="mb-12">
+      <h1 class="mb-4 text-4xl font-bold tracking-tight max-md:text-[2rem]">
+        {pagesConfig.journey.heading}
+      </h1>
+      <p
+        class="max-w-175 text-lg/relaxed text-secondary-foreground max-md:text-base/relaxed"
+      >
+        {pagesConfig.journey.intro}
+      </p>
+    </header>
+
+    {
+      entriesWithContent.length > 0 ? (
+        <div class="mt-8">
+          {entriesWithContent.map(({ entry, Content, hasContent }) => {
+            const typeInfo = typeConfig[entry.data.type]
+            const entryId = `journey-${entry.data.date.getTime()}`
+
+            const formattedDate = new Intl.DateTimeFormat("en-US", {
+              year: "numeric",
+              month: "long",
+            }).format(entry.data.date)
+
+            return (
+              <div class="relative grid grid-cols-[2rem_1fr] gap-6">
+                <div class="relative flex flex-col items-center">
+                  <div
+                    class:list={[
+                      "relative z-2 size-4 shrink-0 rounded-[50%] border bg-accent",
+                      typeInfo.class,
+                    ]}
+                    data-type={entry.data.type}
+                  />
+                  <div class="mt-2 w-0.5 grow bg-border last:hidden" />
+                </div>
+
+                <div class="pb-12">
+                  <div class="mb-2 flex items-center gap-4">
+                    <time
+                      datetime={entry.data.date.toISOString()}
+                      class="text-sm font-medium text-secondary-foreground"
+                    >
+                      {formattedDate}
+                    </time>
+                    <span
+                      class:list={[
+                        "rounded-[6px] border bg-secondary px-2 py-1 text-xs font-semibold tracking-wider uppercase",
+                        typeInfo.class,
+                      ]}
+                    >
+                      {typeInfo.label}
+                    </span>
+                  </div>
+
+                  <h3 class="mb-2 text-lg/tight font-semibold">
+                    {entry.data.title}
+                  </h3>
+                  <p class="mb-4 text-base/relaxed">{entry.data.description}</p>
+
+                  {entry.data.skills && entry.data.skills.length > 0 && (
+                    <div class="mt-4">
+                      <span class="mb-2 block text-sm font-semibold text-secondary-foreground">
+                        Skills:
+                      </span>
+                      <ul class="flex flex-wrap items-start gap-2">
+                        {entry.data.skills.map((skill) => (
+                          <li class="shrink-0 grow-0 rounded-[6px] border bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
+                            {skill}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {hasContent && (
+                    <>
+                      <button
+                        class="mt-4 inline-flex cursor-pointer items-center gap-1.5 border-none bg-none py-2 text-sm font-medium text-accent transition-opacity hover:opacity-80"
+                        aria-expanded="false"
+                        aria-controls={entryId}
+                        type="button"
+                      >
+                        <span class="in-aria-expanded:before:content-['Show_less']">
+                          Read more
+                        </span>
+                        <svg
+                          class="transition-transform in-aria-expanded:rotate-180"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </button>
+                      <div
+                        id={entryId}
+                        class="timeline-body"
+                        aria-hidden="true"
+                      >
+                        <div class="timeline-body-content prose">
+                          <Content />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      ) : (
+        <p class="text-lg text-secondary-foreground italic">
+          No Journey Entries Yet.
+        </p>
+      )
+    }
+  </main>
+</MainLayout>
+
+<script>
+  function initExpandToggles() {
+    const toggles = document.querySelectorAll(".expand-toggle")
+
+    toggles.forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const expanded = toggle.getAttribute("aria-expanded") === "true"
+        const targetId = toggle.getAttribute("aria-controls")
+        const target = document.getElementById(targetId!)
+
+        if (target) {
+          toggle.setAttribute("aria-expanded", String(!expanded))
+          target.setAttribute("aria-hidden", String(expanded))
+        }
+      })
+    })
+  }
+
+  initExpandToggles()
+  document.addEventListener("astro:after-swap", initExpandToggles)
+</script>
