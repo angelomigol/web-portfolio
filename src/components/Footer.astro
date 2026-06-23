@@ -29,7 +29,7 @@ const currentYear = new Date().getFullYear()
           {socialLinks.map((link, index) => (
             <>
               <a
-                href={link.url}
+                href={`/web-portfolio/${link.url}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"

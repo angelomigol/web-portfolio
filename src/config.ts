@@ -53,9 +53,9 @@ export const siteConfig = {
    * Main navigation structure for the website.
    */
   nav: [
-    { label: "Projects", href: "/projects" },
-    { label: "Journey", href: "/journey" },
-    { label: "Contact", href: "/contact" },
+    { label: "Projects", href: "/web-portfolio/projects" },
+    { label: "Journey", href: "/web-portfolio/journey" },
+    { label: "Contact", href: "/web-portfolio/contact" },
   ],
 } as const
 

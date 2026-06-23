@@ -13,7 +13,8 @@ const { SITE_URL } = loadEnv(
 // https://astro.build/config
 export default defineConfig({
   output: "static",
-  site: SITE_URL || "https://cardenas.angelo.me",
+  site: SITE_URL || "https://angelomigol.github.io",
+  base: "/web-portfolio",
   env: {
     schema: {
       SITE_URL: envField.string({

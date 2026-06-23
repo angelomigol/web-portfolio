@@ -14,11 +14,11 @@ import ThemeToggle from "./ModeToggle.astro"
 
 const currentPath = Astro.url.pathname
 
-const navItems = [{ label: "Home", href: "/" }, ...siteConfig.nav]
+const navItems = [{ label: "Home", href: "/web-portfolio/" }, ...siteConfig.nav]
 
 const isActive = (href: string) => {
-  if (href === "/") {
-    return currentPath === "/"
+  if (href === "/web-portfolio/") {
+    return currentPath === "/web-portfolio/"
   }
   return currentPath.startsWith(href)
 }
@@ -67,8 +67,8 @@ const isActive = (href: string) => {
       const href = link.getAttribute("href")
       let isActive = false
 
-      if (href === "/") {
-        isActive = currentPath === "/"
+      if (href === "/web-portfolio/") {
+        isActive = currentPath === "/web-portfolio/"
       } else if (href) {
         isActive = currentPath.startsWith(href)
       }
