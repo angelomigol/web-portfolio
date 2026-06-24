@@ -76,9 +76,9 @@ const featuredProjects = allProjects
               >Explore Projects</a
             >
             <a
-              href="/Cardenas-Resume-2026.pdf"
+              href="/web-portfolio/Cardenas-Resume-2026.pdf"
               download
-              class="inline-flex items-center gap-2 rounded-[6px] border border-foreground bg-transparent px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-85 max-md:w-full max-md:text-center"
+              class="inline-flex items-center justify-center gap-2 rounded-[6px] border border-foreground bg-transparent px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-85 max-md:w-full max-md:text-center"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -109,13 +109,13 @@ const featuredProjects = allProjects
                 })
                 return (
                   <div class="block rounded-[8px] border bg-secondary px-6 py-5 transition hover:border-muted-foreground hover:bg-[#fafafa] in-data-[theme=dark]:hover:bg-[#1a1a1a] max-md:px-5 max-md:py-4">
-                    <span class="mb-1.5 block text-sm font-semibold tracking-wider text-muted-foreground uppercase">
+                    <span class="mb-1.5 block text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                       {formattedDate}
                     </span>
                     <span class="mb-2 block text-base/snug font-semibold">
                       {career.data.title}
                     </span>
-                    <span class="vlock text-sm text-secondary-foreground">
+                    <span class="line-clamp-3 text-sm text-secondary-foreground">
                       {career.data.description}
                     </span>
                   </div>
@@ -138,7 +138,7 @@ const featuredProjects = allProjects
         I enjoy documenting my work and thought process because it helps me
         learn and makes my projects easier to understand.
       </p>
-      <ForwardLink href="/web-portfolio/journey" text="Read my journey" variant="muted" />
+      <ForwardLink href="/journey" text="Read my journey" variant="muted" />
     </section>
 
     <section class="mb-20">
@@ -148,7 +148,7 @@ const featuredProjects = allProjects
         <h2 class="text-xl font-semibold tracking-[-0.01em]">
           Featured Projects
         </h2>
-        <ForwardLink href="/web-portfolio/projects" text="View all" variant="muted" />
+        <ForwardLink href="/projects" text="View all" variant="muted" />
       </div>
 
       {

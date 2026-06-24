@@ -40,14 +40,18 @@ const entriesWithContent = await Promise.all(
 )
 
 const typeConfig = {
-  milestone: { label: "Milestone", class: "status--completed" },
+  milestone: {
+    label: "Milestone",
+    class:
+      "bg-accent-foreground border-accent-foreground text-accent-foreground",
+  },
   learning: {
     label: "Learning",
-    class: "bg-[#22c55e26] text-[#22c55e]",
+    class: "bg-[#10b981] text-[#10b981] border-[#10b981]",
   },
   transition: {
     label: "Transition",
-    class: "bg-[#73737326] text-muted-foreground",
+    class: "bg-[#f59e0b] text-[#f59e0b] border-[#f59e0b]",
   },
 }
 ---
@@ -85,20 +89,22 @@ const typeConfig = {
             }).format(entry.data.date)
 
             return (
-              <div class="relative grid grid-cols-[2rem_1fr] gap-6">
+              <div class="relative grid grid-cols-[2rem_1fr] gap-6 max-md:grid-cols-[1.5rem_1fr] max-md:gap-4 last:[&_.timeline-line]:hidden">
                 <div class="relative flex flex-col items-center">
                   <div
                     class:list={[
-                      "relative z-2 size-4 shrink-0 rounded-[50%] border bg-accent",
+                      "relative z-2 size-4 shrink-0 rounded-[50%] border-[3px] max-md:size-3 max-md:border-2",
                       typeInfo.class,
                     ]}
                     data-type={entry.data.type}
                   />
-                  <div class="mt-2 w-0.5 grow bg-border last:hidden" />
+                  <div
+                    class:list={["mt-2 w-0.5 grow bg-border", "timeline-line"]}
+                  />
                 </div>
 
                 <div class="pb-12">
-                  <div class="mb-2 flex items-center gap-4">
+                  <div class="mb-2 flex items-center gap-4 max-md:flex-col max-md:items-start max-md:gap-2">
                     <time
                       datetime={entry.data.date.toISOString()}
                       class="text-sm font-medium text-secondary-foreground"
@@ -115,10 +121,12 @@ const typeConfig = {
                     </span>
                   </div>
 
-                  <h3 class="mb-2 text-lg/tight font-semibold">
+                  <h3 class="mb-2 text-xl/tight font-semibold max-md:text-lg/tight">
                     {entry.data.title}
                   </h3>
-                  <p class="mb-4 text-base/relaxed">{entry.data.description}</p>
+                  <p class="mb-4 text-base/relaxed max-md:text-sm/relaxed">
+                    {entry.data.description}
+                  </p>
 
                   {entry.data.skills && entry.data.skills.length > 0 && (
                     <div class="mt-4">
@@ -138,12 +146,15 @@ const typeConfig = {
                   {hasContent && (
                     <>
                       <button
-                        class="mt-4 inline-flex cursor-pointer items-center gap-1.5 border-none bg-none py-2 text-sm font-medium text-accent transition-opacity hover:opacity-80"
+                        class:list={[
+                          "expand-toggle",
+                          "mt-4 inline-flex cursor-pointer items-center gap-1.5 border-none bg-none py-2 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-80",
+                        ]}
                         aria-expanded="false"
                         aria-controls={entryId}
                         type="button"
                       >
-                        <span class="in-aria-expanded:before:content-['Show_less']">
+                        <span class="in-aria-expanded:text-[0px] in-aria-expanded:before:text-sm in-aria-expanded:before:content-['Show_less']">
                           Read more
                         </span>
                         <svg
@@ -162,10 +173,10 @@ const typeConfig = {
                       </button>
                       <div
                         id={entryId}
-                        class="timeline-body"
+                        class="grid grid-rows-[0fr] overflow-hidden transition-[grid-template-rows] duration-200 aria-[hidden=false]:grid-rows-[1fr]"
                         aria-hidden="true"
                       >
-                        <div class="timeline-body-content prose">
+                        <div class="mt-4 min-h-0 max-w-[65ch] overflow-hidden border-t pt-6">
                           <Content />
                         </div>
                       </div>
@@ -187,7 +198,7 @@ const typeConfig = {
 
 <script>
   function initExpandToggles() {
-    const toggles = document.querySelectorAll(".expand-toggle")
+    const toggles = document.querySelectorAll("button")
 
     toggles.forEach((toggle) => {
       toggle.addEventListener("click", () => {
