@@ -12,7 +12,7 @@
   "author": "Angelo Cardenas <miguel.cardenas0714@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/angelomigol/portfolio.git"
+    "url": "https://github.com/angelomigol/web-portfolio.git"
   },
   "homepage": "https://cardenas.angelo.me",
   "private": true,
@@ -48,6 +48,7 @@
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.62.0"
+    "typescript-eslint": "^8.62.0",
+    "vite": "^8.1.0"
   }
 }
